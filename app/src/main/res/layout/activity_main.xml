@@ -28,7 +28,7 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/incomeHeader" />
+        app:layout_constraintTop_toBottomOf="@+id/income" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/expensesRecycler"
@@ -49,17 +49,17 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/expensesHeader" />
+        app:layout_constraintTop_toBottomOf="@+id/expenses" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:text="Hello User"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,24 +67,24 @@
         android:id="@+id/income"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Monthly Income"
         android:textColor="@android:color/holo_green_dark"
-        app:layout_constraintBottom_toBottomOf="@+id/incomeHeader"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/incomeHeader" />
+        app:layout_constraintStart_toStartOf="@+id/incomeHeader"
+        app:layout_constraintTop_toBottomOf="@+id/incomeHeader" />
 
     <TextView
         android:id="@+id/expenses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:text="Monthly Expenses"
         android:textColor="@android:color/holo_red_dark"
-        app:layout_constraintBottom_toBottomOf="@+id/expensesHeader"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/expensesHeader" />
+        app:layout_constraintEnd_toEndOf="@+id/expensesHeader"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/expensesHeader"
+        app:layout_constraintTop_toBottomOf="@+id/expensesHeader" />
 
     <TextView
         android:id="@+id/net"
@@ -97,15 +97,45 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView
+        android:id="@+id/month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Current Month"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/net" />
+
+    <TextView
         android:id="@+id/expensesHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="Expenses"
-        android:textStyle="bold"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/net" />
+        app:layout_constraintTop_toBottomOf="@+id/month" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Entry"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/expenses"
+        app:layout_constraintEnd_toEndOf="@+id/divider1"
+        app:layout_constraintTop_toTopOf="@+id/expensesHeader" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Entry"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/income"
+        app:layout_constraintEnd_toEndOf="@+id/divider2"
+        app:layout_constraintTop_toTopOf="@+id/incomeHeader" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
