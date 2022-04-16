@@ -119,6 +119,7 @@
         app:layout_constraintTop_toBottomOf="@+id/month" />
 
     <Button
+        style="@style/Widget.Material3.Button.ElevatedButton"
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -129,6 +130,7 @@
         app:layout_constraintTop_toTopOf="@+id/expensesHeader" />
 
     <Button
+        style="@style/Widget.Material3.Button.ElevatedButton"
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
