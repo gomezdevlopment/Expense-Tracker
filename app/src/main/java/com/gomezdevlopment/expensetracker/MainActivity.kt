@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     val expensesList: ArrayList<Entry> = arrayListOf(Entry("food", 2.99f), Entry("gas", 20f))
     val incomeList: ArrayList<Entry> = arrayListOf()
     val expensesAdapter = EntryAdapter(expensesList)
+    val incomeAdapter = EntryAdapter(incomeList)
     var expensesTotal = 0f
     var incomeTotal = 0f
     var netTotal = 0f
@@ -34,20 +35,24 @@ class MainActivity : AppCompatActivity() {
 
         val addExpenseEntry: Button = findViewById(R.id.button)
         addExpenseEntry.setOnClickListener {
-            createDialog(this)
+            createDialog(this, true)
         }
 
         val addIncomeEntry: Button = findViewById(R.id.button2)
         addIncomeEntry.setOnClickListener {
-            createDialog(this)
+            createDialog(this, false)
         }
 
         val expensesRecycler: RecyclerView = findViewById(R.id.expensesRecycler)
         expensesRecycler.layoutManager = LinearLayoutManager(this)
         expensesRecycler.adapter = expensesAdapter
+
+        val incomeRecycler: RecyclerView = findViewById(R.id.incomeRecycler)
+        incomeRecycler.layoutManager = LinearLayoutManager(this)
+        incomeRecycler.adapter = incomeAdapter
     }
 
-    fun createDialog(context: Context) {
+    fun createDialog(context: Context, expense: Boolean) {
         val dialog = Dialog(context, R.style.AlertDialog)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
@@ -61,9 +66,14 @@ class MainActivity : AppCompatActivity() {
         submitButton.setOnClickListener {
             val labelText: String = label.text.toString()
             val amountFloat: Float = amount.text.toString().toFloat()
-            expensesList.add(Entry(labelText, amountFloat))
+            if(expense){
+                expensesList.add(Entry(labelText, amountFloat))
+                expensesAdapter.notifyItemInserted(expensesList.size)
+            }else{
+                incomeList.add(Entry(labelText, amountFloat))
+                incomeAdapter.notifyItemInserted(incomeList.size)
+            }
             dialog.dismiss()
-            expensesAdapter.notifyItemInserted(expensesList.size)
             setTotals()
         }
     }

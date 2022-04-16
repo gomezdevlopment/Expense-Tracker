@@ -23,10 +23,11 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/income" />
 
@@ -36,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         app:layout_constraintEnd_toEndOf="@+id/divider1"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/divider1"
         app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
@@ -139,5 +141,14 @@
         app:layout_constraintBottom_toBottomOf="@+id/income"
         app:layout_constraintEnd_toEndOf="@+id/divider2"
         app:layout_constraintTop_toTopOf="@+id/incomeHeader" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/incomeRecycler"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/divider2"
+        app:layout_constraintStart_toStartOf="@+id/divider2"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
