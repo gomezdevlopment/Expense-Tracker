@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-fun createDialog(context: Context){
+fun createDialog(context: Context) {
     val dialog = Dialog(context, R.style.AlertDialog)
     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
     dialog.setCancelable(true)
