@@ -27,11 +27,11 @@ class EntryAdapter (entryList: ArrayList<Entry>): RecyclerView.Adapter<EntryAdap
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val label = entryList[position].title
-        val amount = entryList[position].amount
+        val amount = "$${String.format("%.2f", entryList[position].amount)}"
         val date = entryList[position].date
 
         holder.label.text = label
-        holder.amount.text = amount.toString()
+        holder.amount.text = amount
         holder.date.text = date
     }
 }
