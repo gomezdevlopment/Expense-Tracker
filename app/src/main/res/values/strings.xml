@@ -14,4 +14,11 @@
     <string name="oct">October</string>
     <string name="nov">November</string>
     <string name="dec">December</string>
+
+    <string-array name="currencies">
+        <item>"¥ - Japanese Yen"</item>
+        <item>"$ - US Dollar"</item>
+        <item>"€ - Euro"</item>
+        <item>"£ - British Pound"</item>
+    </string-array>
 </resources>
