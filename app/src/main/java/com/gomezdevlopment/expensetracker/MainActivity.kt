@@ -12,6 +12,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private val expensesList: ArrayList<Entry> = arrayListOf(Entry("food", 2.99f), Entry("gas", 20f))
@@ -33,6 +35,9 @@ class MainActivity : AppCompatActivity() {
         income = findViewById(R.id.income)
         net = findViewById(R.id.net)
         setTotals()
+
+        val month: TextView = findViewById(R.id.month)
+        month.text = getMonth()
 
         val profileIcon: CircleImageView = findViewById(R.id.profile_image)
         profileIcon.setOnClickListener {
@@ -106,6 +111,27 @@ class MainActivity : AppCompatActivity() {
 
         val netText = "\$${String.format("%.2f", netTotal)}"
         net.text = netText
+    }
+
+    private fun getMonth(): String {
+        val calendar: Calendar = Calendar.getInstance()
+        val year: Int = calendar.get(Calendar.YEAR)
+        val month: String = when (calendar.get(Calendar.MONTH)) {
+            0 -> getString(R.string.jan)
+            1 -> getString(R.string.feb)
+            2 -> getString(R.string.mar)
+            3 -> getString(R.string.apr)
+            4 -> getString(R.string.may)
+            5 -> getString(R.string.jun)
+            6 -> getString(R.string.jul)
+            7 -> getString(R.string.aug)
+            8 -> getString(R.string.sep)
+            9 -> getString(R.string.oct)
+            10 -> getString(R.string.nov)
+            11 -> getString(R.string.dec)
+            else -> "ERROR"
+        }
+        return "$month $year"
     }
 
 }

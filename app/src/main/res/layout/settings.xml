@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="16dp"
-        android:text="Settings"
+        android:text="@string/preferences"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -29,6 +29,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/settingsHeader"
         app:srcCompat="?attr/homeAsUpIndicator"
-        app:tint="@color/white" />
+        app:tint="@color/white"
+        android:contentDescription="@string/go_back_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
