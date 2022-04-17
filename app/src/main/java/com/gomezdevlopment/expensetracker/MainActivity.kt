@@ -2,6 +2,7 @@ package com.gomezdevlopment.expensetracker
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
@@ -10,15 +11,16 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import de.hdodenhof.circleimageview.CircleImageView
 
 class MainActivity : AppCompatActivity() {
-    val expensesList: ArrayList<Entry> = arrayListOf(Entry("food", 2.99f), Entry("gas", 20f))
-    val incomeList: ArrayList<Entry> = arrayListOf()
-    val expensesAdapter = EntryAdapter(expensesList)
-    val incomeAdapter = EntryAdapter(incomeList)
-    var expensesTotal = 0f
-    var incomeTotal = 0f
-    var netTotal = 0f
+    private val expensesList: ArrayList<Entry> = arrayListOf(Entry("food", 2.99f), Entry("gas", 20f))
+    private val incomeList: ArrayList<Entry> = arrayListOf()
+    private val expensesAdapter = EntryAdapter(expensesList)
+    private val incomeAdapter = EntryAdapter(incomeList)
+    private var expensesTotal = 0f
+    private var incomeTotal = 0f
+    private var netTotal = 0f
     private lateinit var expenses: TextView
     private lateinit var income: TextView
     private lateinit var net: TextView
@@ -32,6 +34,11 @@ class MainActivity : AppCompatActivity() {
         net = findViewById(R.id.net)
         setTotals()
 
+        val profileIcon: CircleImageView = findViewById(R.id.profile_image)
+        profileIcon.setOnClickListener {
+            val intent = Intent(this,Settings::class.java)
+            startActivity(intent)
+        }
 
         val addExpenseEntry: Button = findViewById(R.id.button)
         addExpenseEntry.setOnClickListener {
@@ -52,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         incomeRecycler.adapter = incomeAdapter
     }
 
-    fun createDialog(context: Context, expense: Boolean) {
+    private fun createDialog(context: Context, expense: Boolean) {
         val dialog = Dialog(context, R.style.AlertDialog)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
@@ -78,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun calculateTotal(entries: ArrayList<Entry>): Float{
+    private fun calculateTotal(entries: ArrayList<Entry>): Float{
         var total = 0f
         for(entry in entries){
             total += entry.amount
@@ -86,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         return total
     }
 
-    fun setTotals(){
+    private fun setTotals(){
         expensesTotal = calculateTotal(expensesList)
         incomeTotal = calculateTotal(incomeList)
         netTotal = incomeTotal-expensesTotal
