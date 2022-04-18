@@ -7,12 +7,10 @@ import android.os.Bundle
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import de.hdodenhof.circleimageview.CircleImageView
+import com.gomezdevlopment.expensetracker.databinding.ActivityMainBinding
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -25,10 +23,8 @@ class MainActivity : AppCompatActivity() {
     private var expensesTotal = 0f
     private var incomeTotal = 0f
     private var netTotal = 0f
-    private lateinit var expenses: TextView
-    private lateinit var income: TextView
-    private lateinit var net: TextView
 
+    private lateinit var binding: ActivityMainBinding
     companion object{
         var currency = "$"
     }
@@ -40,41 +36,38 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        expenses = findViewById(R.id.expenses)
-        income = findViewById(R.id.income)
-        net = findViewById(R.id.net)
         setTotals()
         setTheme()
 
 
-        val month: TextView = findViewById(R.id.month)
-        month.text = getMonth()
+        binding.month.text = getMonth()
 
-        val profileIcon: CircleImageView = findViewById(R.id.profile_image)
-        profileIcon.setOnClickListener {
+
+        binding.profileIcon.setOnClickListener {
             val intent = Intent(this,Settings::class.java)
             startActivity(intent)
         }
 
-        val addExpenseEntry: Button = findViewById(R.id.button)
-        addExpenseEntry.setOnClickListener {
+
+        binding.addExpenseEntry.setOnClickListener {
             createDialog(this, true)
         }
 
-        val addIncomeEntry: Button = findViewById(R.id.button2)
-        addIncomeEntry.setOnClickListener {
+
+        binding.addIncomeEntry.setOnClickListener {
             createDialog(this, false)
         }
 
-        val expensesRecycler: RecyclerView = findViewById(R.id.expensesRecycler)
-        expensesRecycler.layoutManager = LinearLayoutManager(this)
-        expensesRecycler.adapter = expensesAdapter
 
-        val incomeRecycler: RecyclerView = findViewById(R.id.incomeRecycler)
-        incomeRecycler.layoutManager = LinearLayoutManager(this)
-        incomeRecycler.adapter = incomeAdapter
+        binding.expensesRecycler.layoutManager = LinearLayoutManager(this)
+        binding.expensesRecycler.adapter = expensesAdapter
+
+
+        binding.incomeRecycler.layoutManager = LinearLayoutManager(this)
+        binding.incomeRecycler.adapter = incomeAdapter
     }
 
     private fun createDialog(context: Context, expense: Boolean) {
@@ -138,9 +131,9 @@ class MainActivity : AppCompatActivity() {
         val incomeText = "+$currency$formattedIncomeTotal"
         val netText = "$currency$formattedNetTotal"
 
-        expenses.text = expensesText
-        income.text = incomeText
-        net.text = netText
+        binding.expenses.text = expensesText
+        binding.income.text = incomeText
+        binding.net.text = netText
 
         expensesAdapter.notifyItemRangeChanged(0, expensesList.size)
         incomeAdapter.notifyItemRangeChanged(0, incomeList.size)

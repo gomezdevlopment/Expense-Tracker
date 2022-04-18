@@ -2,30 +2,29 @@ package com.gomezdevlopment.expensetracker
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.gomezdevlopment.expensetracker.MainActivity.Companion.currency
+import com.gomezdevlopment.expensetracker.databinding.SettingsBinding
 
 class Settings : AppCompatActivity() {
 
+    private lateinit var binding: SettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings)
+        binding = SettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val homeArrow: ImageView = findViewById(R.id.homeArrow)
-
-        homeArrow.setOnClickListener {
+        binding.homeArrow.setOnClickListener {
             onBackPressed()
         }
 
         val currencies = resources.getStringArray(R.array.currencies)
         val arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, currencies)
-        val dropdown: AutoCompleteTextView = findViewById(R.id.currencyDropdownField)
-        dropdown.setAdapter(arrayAdapter)
+        binding.currencyDropdownField.setAdapter(arrayAdapter)
 
-        dropdown.setOnItemClickListener { _, _, i, _ ->
+        binding.currencyDropdownField.setOnItemClickListener { _, _, i, _ ->
             when (i) {
                 0 -> currency = "$"
                 1 -> currency = "£"
@@ -37,10 +36,9 @@ class Settings : AppCompatActivity() {
 
         val themes = arrayListOf("Light", "Dark", "System")
         val themeArrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, themes)
-        val themeDropdown: AutoCompleteTextView = findViewById(R.id.themeDropdownField)
-        themeDropdown.setAdapter(themeArrayAdapter)
+        binding.themeDropdownField.setAdapter(themeArrayAdapter)
 
-        themeDropdown.setOnItemClickListener { _, _, i, _ ->
+        binding.themeDropdownField.setOnItemClickListener { _, _, i, _ ->
             val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
             when (i) {
                 0 -> {
