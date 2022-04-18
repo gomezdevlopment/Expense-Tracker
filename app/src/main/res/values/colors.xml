@@ -9,6 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="background">#FCF5FF</color>
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="buttonText">#FFBB86FC</color>
     <color name="green">#28B305</color>
     <color name="red">#E60000</color>
 </resources>

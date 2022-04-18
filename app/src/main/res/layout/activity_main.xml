@@ -93,6 +93,8 @@
                 android:layout_height="wrap_content"
                 android:text="New Entry"
                 android:textSize="10sp"
+                android:backgroundTint="@color/cardBackground"
+                android:textColor="@color/buttonText"
                 app:layout_constraintBottom_toBottomOf="@+id/income"
                 app:layout_constraintEnd_toEndOf="@+id/divider2"
                 app:layout_constraintTop_toTopOf="@+id/incomeHeader" />
@@ -126,6 +128,8 @@
                 android:layout_height="wrap_content"
                 android:text="New Entry"
                 android:textSize="10sp"
+                android:backgroundTint="@color/cardBackground"
+                android:textColor="@color/buttonText"
                 app:layout_constraintBottom_toBottomOf="@+id/expenses"
                 app:layout_constraintEnd_toEndOf="@+id/expensesRecycler"
                 app:layout_constraintTop_toTopOf="@+id/expensesHeader" />

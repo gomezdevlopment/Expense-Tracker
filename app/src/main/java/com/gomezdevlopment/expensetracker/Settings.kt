@@ -20,6 +20,8 @@ class Settings : AppCompatActivity() {
             onBackPressed()
         }
 
+        val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
+
         val currencies = resources.getStringArray(R.array.currencies)
         val arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, currencies)
         binding.currencyDropdownField.setAdapter(arrayAdapter)
@@ -32,6 +34,7 @@ class Settings : AppCompatActivity() {
                 3 -> currency = "¥"
                 else -> println("Nothing")
             }
+            preferences.edit().putString("currency", currency).apply()
         }
 
         val themes = arrayListOf("Light", "Dark", "System")
@@ -39,7 +42,6 @@ class Settings : AppCompatActivity() {
         binding.themeDropdownField.setAdapter(themeArrayAdapter)
 
         binding.themeDropdownField.setOnItemClickListener { _, _, i, _ ->
-            val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
             when (i) {
                 0 -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

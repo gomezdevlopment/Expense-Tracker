@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var netTotal = 0f
 
     private lateinit var binding: ActivityMainBinding
+
     companion object{
         var currency = "$"
     }
@@ -41,7 +42,6 @@ class MainActivity : AppCompatActivity() {
 
         setTotals()
         setTheme()
-
 
         binding.month.text = getMonth()
 
@@ -162,6 +162,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTheme(){
         val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
+        currency = preferences?.getString("currency", "$").toString()
         when (preferences?.getInt("theme", 2)) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
