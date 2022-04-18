@@ -5,7 +5,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
+import com.gomezdevlopment.expensetracker.MainActivity.Companion.currency
 
 class Settings: AppCompatActivity() {
 
@@ -24,5 +24,14 @@ class Settings: AppCompatActivity() {
         val dropdown: AutoCompleteTextView = findViewById(R.id.dropdownField)
         dropdown.setAdapter(arrayAdapter)
 
+        dropdown.setOnItemClickListener { _, _, i, _ ->
+            when(i){
+                0 -> currency = "$"
+                1 -> currency = "£"
+                2 -> currency = "€"
+                3 -> currency = "¥"
+                else -> println("Nothing")
+            }
+        }
     }
 }

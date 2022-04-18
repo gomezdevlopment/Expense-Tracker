@@ -5,6 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.gomezdevlopment.expensetracker.MainActivity.Companion.currency
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
+import kotlin.collections.ArrayList
 
 class EntryAdapter (entryList: ArrayList<Entry>): RecyclerView.Adapter<EntryAdapter.MyViewHolder>() {
 
@@ -27,7 +32,17 @@ class EntryAdapter (entryList: ArrayList<Entry>): RecyclerView.Adapter<EntryAdap
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val label = entryList[position].title
-        val amount = "$${String.format("%.2f", entryList[position].amount)}"
+
+        var formattedAmount: String = DecimalFormat("#,###.##").format(entryList[position].amount)
+        if(currency == "€"){
+            val europeanDecimalFormat = DecimalFormatSymbols(Locale.getDefault())
+            europeanDecimalFormat.decimalSeparator = ','
+            europeanDecimalFormat.groupingSeparator = '.'
+            val europeanDecimalFormatter = DecimalFormat("#,###.##", europeanDecimalFormat)
+            formattedAmount = europeanDecimalFormatter.format(entryList[position].amount)
+        }
+
+        val amount = "$currency$formattedAmount"
         val date = entryList[position].date
 
         holder.label.text = label

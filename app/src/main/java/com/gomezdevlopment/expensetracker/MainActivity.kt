@@ -3,17 +3,18 @@ package com.gomezdevlopment.expensetracker
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private val expensesList: ArrayList<Entry> = arrayListOf(Entry("food", 2.99f), Entry("gas", 20f))
@@ -26,6 +27,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var expenses: TextView
     private lateinit var income: TextView
     private lateinit var net: TextView
+
+    companion object{
+        var currency = "$"
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setTotals()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,14 +113,34 @@ class MainActivity : AppCompatActivity() {
         incomeTotal = calculateTotal(incomeList)
         netTotal = incomeTotal-expensesTotal
 
-        val expensesText = "-\$${String.format("%.2f", expensesTotal)}"
+        val formattedExpenseTotal: String
+        val formattedIncomeTotal: String
+        val formattedNetTotal: String
+
+        if(currency == "€"){
+            val europeanDecimalFormatSymbols = DecimalFormatSymbols(Locale.getDefault())
+            europeanDecimalFormatSymbols.decimalSeparator = ','
+            europeanDecimalFormatSymbols.groupingSeparator = '.'
+            val europeanDecimalFormat = DecimalFormat("#,###.##", europeanDecimalFormatSymbols)
+            formattedExpenseTotal = europeanDecimalFormat.format(expensesTotal)
+            formattedIncomeTotal = europeanDecimalFormat.format(incomeTotal)
+            formattedNetTotal = europeanDecimalFormat.format(netTotal)
+        }else{
+            formattedExpenseTotal = DecimalFormat("#,###.##").format(expensesTotal)
+            formattedIncomeTotal = DecimalFormat("#,###.##").format(incomeTotal)
+            formattedNetTotal = DecimalFormat("#,###.##").format(netTotal)
+        }
+
+        val expensesText = "-$currency$formattedExpenseTotal"
+        val incomeText = "+$currency$formattedIncomeTotal"
+        val netText = "$currency$formattedNetTotal"
+
         expenses.text = expensesText
-
-        val incomeText = "+\$${String.format("%.2f", incomeTotal)}"
         income.text = incomeText
-
-        val netText = "\$${String.format("%.2f", netTotal)}"
         net.text = netText
+
+        expensesAdapter.notifyItemRangeChanged(0, expensesList.size)
+        incomeAdapter.notifyItemRangeChanged(0, incomeList.size)
     }
 
     private fun getMonth(): String {

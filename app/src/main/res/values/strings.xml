@@ -16,9 +16,9 @@
     <string name="dec">December</string>
 
     <string-array name="currencies">
-        <item>"¥ - Japanese Yen"</item>
         <item>"$ - US Dollar"</item>
-        <item>"€ - Euro"</item>
         <item>"£ - British Pound"</item>
+        <item>"€ - Euro"</item>
+        <item>"¥ - Japanese Yen"</item>
     </string-array>
 </resources>
