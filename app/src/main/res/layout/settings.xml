@@ -56,7 +56,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/dropdown"
+        android:id="@+id/currencyDropdown"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -64,6 +64,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:hint="Currency"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:startIconTint="@color/white"
         android:textColorHint="@color/white"
         app:startIconDrawable="@drawable/ic_dollar"
@@ -72,9 +74,32 @@
         app:layout_constraintTop_toBottomOf="@+id/settings">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/dropdownField"
+            android:id="@+id/currencyDropdownField"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/themeDropdown"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:hint="Theme"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currencyDropdown"
+        app:startIconDrawable="@drawable/ic_theme"
+        app:startIconTint="@color/white">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/themeDropdownField"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

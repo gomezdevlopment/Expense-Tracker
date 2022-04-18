@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
@@ -45,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         income = findViewById(R.id.income)
         net = findViewById(R.id.net)
         setTotals()
+        setTheme()
+
 
         val month: TextView = findViewById(R.id.month)
         month.text = getMonth()
@@ -164,4 +167,13 @@ class MainActivity : AppCompatActivity() {
         return "$month $year"
     }
 
+    private fun setTheme(){
+        val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
+        when (preferences?.getInt("theme", 2)) {
+            0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            else -> println("Nothing")
+        }
+    }
 }
