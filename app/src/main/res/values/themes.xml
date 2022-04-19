@@ -19,4 +19,11 @@
     <style name="AlertDialog" parent="Theme.Material3.DayNight.BottomSheetDialog">
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="FloatingButtonTheme" parent="Widget.Material3.ExtendedFloatingActionButton.Primary">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimaryDark">@color/purple_200</item>
+        <item name="colorAccent">@color/black</item>
+    </style>
 </resources>

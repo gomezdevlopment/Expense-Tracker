@@ -46,6 +46,10 @@ class MainActivity : AppCompatActivity() {
         binding.month.text = getMonth()
 
 
+        binding.floatingActionButton.setOnClickListener {
+            startActivity(Intent(this, Stats::class.java))
+        }
+
         binding.profileIcon.setOnClickListener {
             val intent = Intent(this,Settings::class.java)
             startActivity(intent)
