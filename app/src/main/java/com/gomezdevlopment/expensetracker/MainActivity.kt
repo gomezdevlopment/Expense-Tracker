@@ -24,18 +24,19 @@ import java.text.DecimalFormatSymbols
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val expenseAdapter = EntryAdapter()
-    private val incomeAdapter = EntryAdapter()
+    private lateinit var expenseAdapter: EntryAdapter
+    private lateinit var incomeAdapter: EntryAdapter
     private var expensesTotal = 0f
     private var incomeTotal = 0f
     private var netTotal = 0f
     private var userName = "User"
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var userViewModel: ViewModel
+    //private lateinit var userViewModel: ViewModel
 
     companion object{
         var currency = "$"
+        lateinit var userViewModel: ViewModel
     }
 
     override fun onResume() {
@@ -47,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        expenseAdapter = EntryAdapter(this)
+        incomeAdapter = EntryAdapter(this)
 
         userViewModel = ViewModelProvider(this)[ViewModel::class.java]
 

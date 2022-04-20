@@ -27,4 +27,10 @@ class ViewModel (application: Application): AndroidViewModel(application) {
             repository.addEntry(entry)
         }
     }
+
+    fun deleteEntry(entry: UserEntry){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.deleteEntry(entry)
+        }
+    }
 }

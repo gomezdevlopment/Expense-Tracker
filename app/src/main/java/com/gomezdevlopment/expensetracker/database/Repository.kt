@@ -10,4 +10,8 @@ class Repository(private val entryDao: EntryDao) {
     suspend fun addEntry(entry: UserEntry){
         entryDao.addUserEntry(entry)
     }
+
+    suspend fun deleteEntry(entry: UserEntry){
+        entryDao.deleteEntry(entry)
+    }
 }
