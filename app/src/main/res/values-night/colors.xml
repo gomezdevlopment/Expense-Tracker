@@ -13,4 +13,5 @@
     <color name="buttonText">#FFFFFF</color>
     <color name="green">#82EA68</color>
     <color name="red">#F15B5B</color>
+    <color name="chartText">#FFFFFF</color>
 </resources>
