@@ -8,23 +8,24 @@ import android.os.Bundle
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ListAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gomezdevlopment.expensetracker.database.UserEntry
 import com.gomezdevlopment.expensetracker.database.ViewModel
 import com.gomezdevlopment.expensetracker.databinding.ActivityMainBinding
+import kotlinx.android.synthetic.main.activity_main.*
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val expensesList: ArrayList<Entry> = arrayListOf()
-    private val incomeList: ArrayList<Entry> = arrayListOf()
-    private val expensesAdapter = EntryAdapter(expensesList)
-    private val incomeAdapter = EntryAdapter(incomeList)
+    private val expenseAdapter = EntryAdapter()
+    private val incomeAdapter = EntryAdapter()
     private var expensesTotal = 0f
     private var incomeTotal = 0f
     private var netTotal = 0f
@@ -49,7 +50,6 @@ class MainActivity : AppCompatActivity() {
 
         userViewModel = ViewModelProvider(this)[ViewModel::class.java]
 
-        setTotals()
         setTheme()
 
         binding.month.text = getMonth()
@@ -78,12 +78,19 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        binding.expensesRecycler.adapter = expenseAdapter
         binding.expensesRecycler.layoutManager = LinearLayoutManager(this)
-        binding.expensesRecycler.adapter = expensesAdapter
+        userViewModel.expenseEntries.observe(this) { entry ->
+            expenseAdapter.setData(entry)
+            setTotals()
+        }
 
-
-        binding.incomeRecycler.layoutManager = LinearLayoutManager(this)
         binding.incomeRecycler.adapter = incomeAdapter
+        binding.incomeRecycler.layoutManager = LinearLayoutManager(this)
+        userViewModel.incomeEntries.observe(this) { entry ->
+            incomeAdapter.setData(entry)
+            setTotals()
+        }
     }
 
     private fun createDialog(context: Context, expense: Boolean) {
@@ -102,14 +109,10 @@ class MainActivity : AppCompatActivity() {
                 val labelText: String = label.text.toString()
                 val amountFloat: Float = amount.text.toString().toFloat()
                 if(expense){
-                    val entry: Entry = Entry(labelText, amountFloat)
-                    expensesList.add(entry)
-                    expensesAdapter.notifyItemInserted(expensesList.size)
+                    val entry = Entry(labelText, amountFloat)
                     addEntryToDatabase(entry.title, entry.amount, entry.date, "expense")
                 }else{
-                    val entry: Entry = Entry(labelText, amountFloat)
-                    incomeList.add(entry)
-                    incomeAdapter.notifyItemInserted(incomeList.size)
+                    val entry = Entry(labelText, amountFloat)
                     addEntryToDatabase(entry.title, entry.amount, entry.date, "income")
                 }
                 dialog.dismiss()
@@ -125,17 +128,9 @@ class MainActivity : AppCompatActivity() {
         userViewModel.addEntry(entry)
     }
 
-    private fun calculateTotal(entries: ArrayList<Entry>): Float{
-        var total = 0f
-        for(entry in entries){
-            total += entry.amount
-        }
-        return total
-    }
-
     private fun setTotals(){
-        expensesTotal = calculateTotal(expensesList)
-        incomeTotal = calculateTotal(incomeList)
+        incomeTotal = incomeAdapter.getTotal()
+        expensesTotal = expenseAdapter.getTotal()
         netTotal = incomeTotal-expensesTotal
 
         val formattedExpenseTotal: String
@@ -164,8 +159,8 @@ class MainActivity : AppCompatActivity() {
         binding.income.text = incomeText
         binding.net.text = netText
 
-        expensesAdapter.notifyItemRangeChanged(0, expensesList.size)
-        incomeAdapter.notifyItemRangeChanged(0, incomeList.size)
+        incomeAdapter.notifyCurrencyChange()
+        expenseAdapter.notifyCurrencyChange()
     }
 
     private fun getMonth(): String {
