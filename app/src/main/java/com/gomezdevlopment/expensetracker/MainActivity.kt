@@ -11,7 +11,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.gomezdevlopment.expensetracker.database.UserEntry
+import com.gomezdevlopment.expensetracker.database.ViewModel
 import com.gomezdevlopment.expensetracker.databinding.ActivityMainBinding
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -28,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var userName = "User"
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var userViewModel: ViewModel
 
     companion object{
         var currency = "$"
@@ -42,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        userViewModel = ViewModelProvider(this)[ViewModel::class.java]
 
         setTotals()
         setTheme()
@@ -92,18 +98,31 @@ class MainActivity : AppCompatActivity() {
         val submitButton: Button = dialog.findViewById(R.id.submitEntryButton)
 
         submitButton.setOnClickListener {
-            val labelText: String = label.text.toString()
-            val amountFloat: Float = amount.text.toString().toFloat()
-            if(expense){
-                expensesList.add(Entry(labelText, amountFloat))
-                expensesAdapter.notifyItemInserted(expensesList.size)
+            if(amount.text.isNotEmpty() && label.text.isNotEmpty()){
+                val labelText: String = label.text.toString()
+                val amountFloat: Float = amount.text.toString().toFloat()
+                if(expense){
+                    val entry: Entry = Entry(labelText, amountFloat)
+                    expensesList.add(entry)
+                    expensesAdapter.notifyItemInserted(expensesList.size)
+                    addEntryToDatabase(entry.title, entry.amount, entry.date, "expense")
+                }else{
+                    val entry: Entry = Entry(labelText, amountFloat)
+                    incomeList.add(entry)
+                    incomeAdapter.notifyItemInserted(incomeList.size)
+                    addEntryToDatabase(entry.title, entry.amount, entry.date, "income")
+                }
+                dialog.dismiss()
+                setTotals()
             }else{
-                incomeList.add(Entry(labelText, amountFloat))
-                incomeAdapter.notifyItemInserted(incomeList.size)
+                Toast.makeText(context, "Fields cannot be left blank.", Toast.LENGTH_SHORT).show()
             }
-            dialog.dismiss()
-            setTotals()
         }
+    }
+
+    private fun addEntryToDatabase(title: String, amount: Float, date: String, entryType: String){
+        val entry = UserEntry(0, title, amount, date, entryType)
+        userViewModel.addEntry(entry)
     }
 
     private fun calculateTotal(entries: ArrayList<Entry>): Float{
@@ -199,10 +218,10 @@ class MainActivity : AppCompatActivity() {
             return string.all { it.isLetter() }
         }
 
-        submitButton.setOnClickListener {
-            if(name.text.isNotEmpty()){
-                if(isLetters(name.text.toString())){
-                    userName = name.text.toString()
+        fun checkUserName(name: String){
+            if(name.isNotEmpty()){
+                if(isLetters(name)){
+                    userName = name
                     val greeting = "Hello $userName,"
                     binding.userName.text = greeting
                     val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
@@ -215,8 +234,12 @@ class MainActivity : AppCompatActivity() {
             }else{
                 Toast.makeText(context, "Please enter a name, it can be a nickname or any username you prefer.", Toast.LENGTH_LONG).show()
             }
-
-            setTotals()
         }
+
+        submitButton.setOnClickListener {
+            val submittedName = name.text.toString()
+            checkUserName(submittedName)
+        }
+
     }
 }

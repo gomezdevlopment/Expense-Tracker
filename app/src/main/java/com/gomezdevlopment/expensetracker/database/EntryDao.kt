@@ -14,5 +14,10 @@ interface EntryDao {
     @Query("SELECT * FROM user_entries")
     fun getUserEntries(): LiveData<List<UserEntry>>
 
+    @Query("SELECT * FROM user_entries WHERE entryType = 'income'")
+    fun getIncomeEntries(): LiveData<List<UserEntry>>
+
+    @Query("SELECT * FROM user_entries WHERE entryType = 'expense'")
+    fun getExpenseEntries(): LiveData<List<UserEntry>>
 
 }

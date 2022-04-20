@@ -9,13 +9,17 @@ import kotlinx.coroutines.launch
 
 class ViewModel (application: Application): AndroidViewModel(application) {
 
-    private var userEntries: LiveData<List<UserEntry>>
+    var userEntries: LiveData<List<UserEntry>>
+    var incomeEntries: LiveData<List<UserEntry>>
+    var expenseEntries: LiveData<List<UserEntry>>
     private val repository: Repository
 
     init {
         val entryDao = UserEntryDatabase.getDatabase(application).entryDao()
         repository = Repository(entryDao)
         userEntries = repository.userEntries
+        incomeEntries = repository.incomeEntries
+        expenseEntries = repository.expenseEntries
     }
 
     fun addEntry(entry: UserEntry){

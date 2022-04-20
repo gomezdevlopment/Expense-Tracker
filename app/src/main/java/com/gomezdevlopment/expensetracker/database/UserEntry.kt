@@ -9,6 +9,7 @@ data class UserEntry(
     val id: Int,
     val title: String,
     val value: Float,
-    val date: String
+    val date: String,
+    val entryType: String
 )
 
