@@ -26,6 +26,10 @@ class Stats: AppCompatActivity() {
         binding = StatsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.homeArrow.setOnClickListener {
+            onBackPressed()
+        }
+
         val income: Float = intent.extras?.get("income") as Float
         val expenses = intent.extras?.get("expenses") as Float
 
@@ -77,13 +81,14 @@ class Stats: AppCompatActivity() {
 
         barDataSet.setColors(*ColorTemplate.JOYFUL_COLORS)
 
+
         chart.axisLeft.isEnabled = false
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         chart.xAxis.labelCount = labels.size
         chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         chart.xAxis.gridColor = ContextCompat.getColor(this, R.color.chartText)
         chart.xAxis.textColor = ContextCompat.getColor(this, R.color.chartText)
-
+        chart.axisRight.textColor = ContextCompat.getColor(this, R.color.chartText)
 
         val data = BarData(barDataSet)
         data.setValueTextSize(11f)
