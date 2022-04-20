@@ -19,9 +19,12 @@ class Stats: AppCompatActivity() {
         binding = StatsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val income: Float = intent.extras?.get("income") as Float
+        val expenses = intent.extras?.get("expenses") as Float
+
         val overviewValues = ArrayList<PieEntry>()
-        overviewValues.add(PieEntry(500f, "Expenses"))
-        overviewValues.add(PieEntry(1200f, "Income"))
+        overviewValues.add(PieEntry(expenses, "Expenses"))
+        overviewValues.add(PieEntry(income, "Income"))
         setPieChart(overviewValues, binding.pieChart)
 
         val detailedValues = ArrayList<PieEntry>()

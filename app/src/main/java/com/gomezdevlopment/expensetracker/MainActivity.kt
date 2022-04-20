@@ -3,10 +3,12 @@ package com.gomezdevlopment.expensetracker
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,13 +18,14 @@ import java.text.DecimalFormatSymbols
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val expensesList: ArrayList<Entry> = arrayListOf(Entry("food", 2.99f), Entry("gas", 20f))
+    private val expensesList: ArrayList<Entry> = arrayListOf()
     private val incomeList: ArrayList<Entry> = arrayListOf()
     private val expensesAdapter = EntryAdapter(expensesList)
     private val incomeAdapter = EntryAdapter(incomeList)
     private var expensesTotal = 0f
     private var incomeTotal = 0f
     private var netTotal = 0f
+    private var userName = "User"
 
     private lateinit var binding: ActivityMainBinding
 
@@ -47,7 +50,10 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.floatingActionButton.setOnClickListener {
-            startActivity(Intent(this, Stats::class.java))
+            val intent = Intent(this, Stats::class.java)
+            intent.putExtra("income", incomeTotal)
+            intent.putExtra("expenses", expensesTotal)
+            startActivity(intent)
         }
 
         binding.profileIcon.setOnClickListener {
@@ -166,12 +172,51 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTheme(){
         val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
+        val greeting = "Hello ${preferences.getString("username", "user")},"
+        binding.userName.text = greeting
+        if(preferences.getBoolean("initial_launch", true)){
+            initialLaunch(this)
+        }
         currency = preferences?.getString("currency", "$").toString()
         when (preferences?.getInt("theme", 2)) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             else -> println("Nothing")
+        }
+    }
+
+    private fun initialLaunch(context: Context){
+        val dialog = Dialog(context, R.style.AlertDialog)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.initial_launch_dialog)
+        dialog.show()
+
+        val name: EditText = dialog.findViewById(R.id.nameEditText)
+        val submitButton: Button = dialog.findViewById(R.id.submitButton)
+
+        fun isLetters(string: String): Boolean {
+            return string.all { it.isLetter() }
+        }
+
+        submitButton.setOnClickListener {
+            if(name.text.isNotEmpty()){
+                if(isLetters(name.text.toString())){
+                    userName = name.text.toString()
+                    val greeting = "Hello $userName,"
+                    binding.userName.text = greeting
+                    val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
+                    preferences.edit().putBoolean("initial_launch", false).apply()
+                    preferences.edit().putString("username", userName).apply()
+                    dialog.dismiss()
+                }else{
+                    Toast.makeText(context, "Please enter alphabetic characters only. No spaces.", Toast.LENGTH_LONG).show()
+                }
+            }else{
+                Toast.makeText(context, "Please enter a name, it can be a nickname or any username you prefer.", Toast.LENGTH_LONG).show()
+            }
+
+            setTotals()
         }
     }
 }
