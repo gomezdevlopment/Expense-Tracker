@@ -15,4 +15,6 @@
     <color name="red">#F15B5B</color>
     <color name="chartText">#FFFFFF</color>
     <color name="statsBackButton">#FFFFFF</color>
+    <color name="textButtonSettings">#03FFEA</color>
+    <color name="cancelButton">#E6E6E6</color>
 </resources>

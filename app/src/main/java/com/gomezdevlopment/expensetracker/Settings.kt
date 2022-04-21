@@ -1,7 +1,9 @@
 package com.gomezdevlopment.expensetracker
 
+import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
-import android.widget.ArrayAdapter
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.gomezdevlopment.expensetracker.MainActivity.Companion.currency
@@ -18,6 +20,10 @@ class Settings : AppCompatActivity() {
 
         binding.homeArrow.setOnClickListener {
             onBackPressed()
+        }
+
+        binding.changeNameButton.setOnClickListener {
+            changeUsername(this)
         }
 
         val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
@@ -58,6 +64,46 @@ class Settings : AppCompatActivity() {
                 else -> println("Nothing")
             }
             finish()
+        }
+    }
+
+    private fun changeUsername(context: Context){
+        val dialog = Dialog(context, R.style.AlertDialog)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.change_username_dialog)
+        dialog.show()
+
+        val name: EditText = dialog.findViewById(R.id.nameEditText)
+        val submitButton: Button = dialog.findViewById(R.id.submitButton)
+        val cancelButton: Button = dialog.findViewById(R.id.cancelButton)
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        fun isLetters(string: String): Boolean {
+            return string.all { it.isLetter() }
+        }
+
+        fun checkUserName(name: String){
+            if(name.isNotEmpty()){
+                if(isLetters(name)){
+                    val userName = name
+                    val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
+                    preferences.edit().putString("username", userName).apply()
+                    dialog.dismiss()
+                    Toast.makeText(context, "Username Changed Successfully", Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(context, "Please enter alphabetic characters only. No spaces.", Toast.LENGTH_LONG).show()
+                }
+            }else{
+                Toast.makeText(context, "Please enter a name, it can be a nickname or any username you prefer.", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        submitButton.setOnClickListener {
+            val submittedName = name.text.toString()
+            checkUserName(submittedName)
         }
     }
 }

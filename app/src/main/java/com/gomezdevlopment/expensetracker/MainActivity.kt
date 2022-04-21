@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private var userName = "User"
 
     private lateinit var binding: ActivityMainBinding
-    //private lateinit var userViewModel: ViewModel
+    private lateinit var preferences: SharedPreferences
 
     companion object{
         var currency = "$"
@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         setTotals()
+        setGreeting()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,9 +50,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Initialize lateinit variables
         expenseAdapter = EntryAdapter(this)
         incomeAdapter = EntryAdapter(this)
-
+        preferences = getSharedPreferences("preferences", MODE_PRIVATE)
         userViewModel = ViewModelProvider(this)[ViewModel::class.java]
 
         setTheme()
@@ -189,19 +191,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setTheme(){
-        val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
-        val greeting = "Hello ${preferences.getString("username", "user")},"
-        binding.userName.text = greeting
+        setGreeting()
         if(preferences.getBoolean("initial_launch", true)){
             initialLaunch(this)
         }
-        currency = preferences?.getString("currency", "$").toString()
-        when (preferences?.getInt("theme", 2)) {
+        currency = preferences.getString("currency", "$").toString()
+        when (preferences.getInt("theme", 2)) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             else -> println("Nothing")
         }
+    }
+
+    private fun setGreeting(){
+        val greeting = "Hello ${preferences.getString("username", "user")},"
+        binding.userName.text = greeting
     }
 
     private fun initialLaunch(context: Context){
@@ -221,11 +226,9 @@ class MainActivity : AppCompatActivity() {
             if(name.isNotEmpty()){
                 if(isLetters(name)){
                     userName = name
-                    val greeting = "Hello $userName,"
-                    binding.userName.text = greeting
-                    val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
                     preferences.edit().putBoolean("initial_launch", false).apply()
                     preferences.edit().putString("username", userName).apply()
+                    setGreeting()
                     dialog.dismiss()
                 }else{
                     Toast.makeText(context, "Please enter alphabetic characters only. No spaces.", Toast.LENGTH_LONG).show()

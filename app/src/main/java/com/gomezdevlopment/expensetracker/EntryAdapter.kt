@@ -21,7 +21,6 @@ import kotlin.collections.ArrayList
 class EntryAdapter(private var context: Context): RecyclerView.Adapter<EntryAdapter.MyViewHolder>() {
 
     private var entryList = emptyList<UserEntry>()
-    //val entryList: ArrayList<Entry> = entryList
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val label: TextView = itemView.findViewById(R.id.label)
@@ -65,19 +64,19 @@ class EntryAdapter(private var context: Context): RecyclerView.Adapter<EntryAdap
             builder.setTitle("Delete Entry")
             builder.setMessage("Are you sure you want to delete this entry?")
 
-            builder.setPositiveButton("Yes") { dialog, which ->
+            builder.setPositiveButton("Yes") { _, _ ->
                 deleteEntryFromDatabase(currentEntry)
                 Toast.makeText(context, "Entry Deleted", Toast.LENGTH_SHORT).show()
             }
 
-            builder.setNegativeButton("Cancel") { dialog, which ->
+            builder.setNegativeButton("Cancel") { _, _ ->
                 Toast.makeText(context, "Deletion Cancelled", Toast.LENGTH_SHORT).show()
             }
             builder.show()
         }
     }
 
-    fun deleteEntryFromDatabase(entry: UserEntry){
+    private fun deleteEntryFromDatabase(entry: UserEntry){
         MainActivity.userViewModel.deleteEntry(entry)
     }
 
