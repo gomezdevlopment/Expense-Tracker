@@ -1,13 +1,25 @@
 package com.gomezdevlopment.expensetracker
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.gomezdevlopment.expensetracker.MainActivity.Companion.currency
 import com.gomezdevlopment.expensetracker.databinding.SettingsBinding
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+
 
 class Settings : AppCompatActivity() {
 
@@ -18,12 +30,52 @@ class Settings : AppCompatActivity() {
         binding = SettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if(File(filesDir, "profileImage.png").exists()){
+            val bitmap = BitmapFactory.decodeFile(File(filesDir, "profileImage.png").toString())
+            binding.profileImage.setImageBitmap(bitmap)
+        }
+
         binding.homeArrow.setOnClickListener {
             onBackPressed()
         }
 
         binding.changeNameButton.setOnClickListener {
             changeUsername(this)
+        }
+
+        val startForProfileImageResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    //Image Uri will not be null for RESULT_OK
+                    val fileUri = data?.data!!
+
+                    val bitmap = getContactBitmapFromURI(this, fileUri)
+                    if (bitmap != null) {
+                        saveImageToInternalStorage(bitmap)
+                    }
+                    binding.profileImage.setImageURI(fileUri)
+                }
+                ImagePicker.RESULT_ERROR -> {
+                    Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        binding.profileImage.setOnClickListener {
+            ImagePicker.with(this)
+                .galleryOnly()
+                .cropSquare()
+                .compress(1024)
+                .maxResultSize(1080, 1080)
+                .createIntent { intent ->
+                    startForProfileImageResult.launch(intent)
+                }
         }
 
         val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
@@ -64,6 +116,28 @@ class Settings : AppCompatActivity() {
                 else -> println("Nothing")
             }
             finish()
+        }
+    }
+
+    private fun getContactBitmapFromURI(context: Context, uri: Uri?): Bitmap? {
+        try {
+            val input = context.contentResolver.openInputStream(uri!!) ?: return null
+            return BitmapFactory.decodeStream(input)
+        } catch (e: FileNotFoundException) {
+        }
+        return null
+    }
+
+    private fun saveImageToInternalStorage(image: Bitmap): Boolean {
+        return try {
+            val fos: FileOutputStream = openFileOutput("profileImage.png", MODE_PRIVATE)
+
+            image.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            fos.close()
+            true
+        } catch (e: Exception) {
+            Log.e("saveToInternalStorage()", e.toString())
+            false
         }
     }
 

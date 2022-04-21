@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.Window
 import android.widget.Button
@@ -19,6 +20,7 @@ import com.gomezdevlopment.expensetracker.database.UserEntry
 import com.gomezdevlopment.expensetracker.database.ViewModel
 import com.gomezdevlopment.expensetracker.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -43,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         setTotals()
         setGreeting()
+        setProfileImage()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -192,6 +195,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTheme(){
         setGreeting()
+        setProfileImage()
         if(preferences.getBoolean("initial_launch", true)){
             initialLaunch(this)
         }
@@ -207,6 +211,13 @@ class MainActivity : AppCompatActivity() {
     private fun setGreeting(){
         val greeting = "Hello ${preferences.getString("username", "user")},"
         binding.userName.text = greeting
+    }
+
+    private fun setProfileImage(){
+        if(File(filesDir, "profileImage.png").exists()){
+            val bitmap = BitmapFactory.decodeFile(File(filesDir, "profileImage.png").toString())
+            binding.profileIcon.setImageBitmap(bitmap)
+        }
     }
 
     private fun initialLaunch(context: Context){
