@@ -15,6 +15,7 @@ class ViewModel (application: Application): AndroidViewModel(application) {
     var distinctDates: LiveData<List<String>>
     var incomeEntriesByDate: LiveData<List<UserEntry>>
     var expenseEntriesByDate: LiveData<List<UserEntry>>
+    var entriesByDate: LiveData<List<UserEntry>>
     private val repository: Repository
 
     init {
@@ -26,6 +27,7 @@ class ViewModel (application: Application): AndroidViewModel(application) {
         distinctDates = repository.distinctDates
         incomeEntriesByDate = repository.incomeEntries
         expenseEntriesByDate = repository.expenseEntries
+        entriesByDate = repository.userEntries
     }
 
     fun addEntry(entry: UserEntry){
@@ -43,5 +45,9 @@ class ViewModel (application: Application): AndroidViewModel(application) {
     fun getEntriesByDate(date: String){
         incomeEntriesByDate = repository.getIncomeEntriesByDate(date)
         expenseEntriesByDate = repository.getExpenseEntriesByDate(date)
+    }
+
+    fun getAllEntriesByDate(date: String){
+        entriesByDate = repository.getEntriesByDate(date)
     }
 }

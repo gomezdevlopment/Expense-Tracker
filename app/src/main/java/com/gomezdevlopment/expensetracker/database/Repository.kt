@@ -23,4 +23,8 @@ class Repository(private val entryDao: EntryDao) {
     fun getExpenseEntriesByDate(date: String): LiveData<List<UserEntry>>{
         return entryDao.getExpenseEntriesByDate(date)
     }
+
+    fun getEntriesByDate(date: String): LiveData<List<UserEntry>>{
+        return entryDao.getEntriesByDate(date)
+    }
 }

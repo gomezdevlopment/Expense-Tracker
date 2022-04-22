@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gomezdevlopment.expensetracker.database.UserEntry
 import com.gomezdevlopment.expensetracker.database.ViewModel
 import com.gomezdevlopment.expensetracker.databinding.ActivityMainBinding
+import kotlinx.android.synthetic.main.entry_item.*
 import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private var incomeTotal = 0f
     private var netTotal = 0f
     private var userName = "User"
+    private var month = ""
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferences: SharedPreferences
@@ -60,11 +62,13 @@ class MainActivity : AppCompatActivity() {
 
         setMonthAdapter()
 
+        month = currentMonth()
 
         binding.floatingActionButton.setOnClickListener {
             val intent = Intent(this, Stats::class.java)
             intent.putExtra("income", incomeTotal)
             intent.putExtra("expenses", expensesTotal)
+            intent.putExtra("month", month)
             startActivity(intent)
         }
 
@@ -103,6 +107,8 @@ class MainActivity : AppCompatActivity() {
         val months: ArrayList<String> = arrayListOf()
         val dates: ArrayList<String> = arrayListOf()
         userViewModel.distinctDates.observe(this) { entries ->
+            months.clear()
+            dates.clear()
             for (date in entries) {
                 val month = monthName(date.subSequence(5, 7) as String)
                 val year = date.subSequence(0, 4) as String
@@ -119,10 +125,9 @@ class MainActivity : AppCompatActivity() {
             binding.monthDropdownField.setSelection(months.indexOf(currentMonth()))
         }
 
-
-
         binding.monthDropdownField.setOnItemClickListener { _, _, i, _ ->
 
+            month = dates[i]
             userViewModel.getEntriesByDate(dates[i])
             userViewModel.incomeEntriesByDate.observe(this) { entries ->
                 entries.let{

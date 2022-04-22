@@ -32,6 +32,7 @@ class Stats: AppCompatActivity() {
 
         val income: Float = intent.extras?.get("income") as Float
         val expenses = intent.extras?.get("expenses") as Float
+        val month = intent.extras?.get("month") as String
 
         val overviewValues = ArrayList<PieEntry>()
         overviewValues.add(PieEntry(expenses, "Expenses"))
@@ -42,7 +43,8 @@ class Stats: AppCompatActivity() {
         val userViewModel = ViewModelProvider(this)[ViewModel::class.java]
         val xAxisLabels: ArrayList<String> = arrayListOf()
 
-        userViewModel.userEntries.observe(this) { entries ->
+        userViewModel.getAllEntriesByDate(month)
+        userViewModel.entriesByDate.observe(this) { entries ->
             var pos = 0f
             val sortedEntries = entries.sortedBy { it.value }
             for(entry in sortedEntries) {

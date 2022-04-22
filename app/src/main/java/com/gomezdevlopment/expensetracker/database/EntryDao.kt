@@ -20,6 +20,9 @@ interface EntryDao {
     @Query("SELECT * FROM user_entries WHERE entryType = 'expense'")
     fun getExpenseEntries(): LiveData<List<UserEntry>>
 
+    @Query("SELECT * FROM user_entries WHERE SUBSTR(date, 0, 8) = :date")
+    fun getEntriesByDate(date: String): LiveData<List<UserEntry>>
+
     @Query("SELECT * FROM user_entries WHERE SUBSTR(date, 0, 8) = :date AND entryType ='income'")
     fun getIncomeEntriesByDate(date: String): LiveData<List<UserEntry>>
 
