@@ -2,23 +2,30 @@ package com.gomezdevlopment.expensetracker
 
 import android.app.Activity
 import android.app.Dialog
+import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.gomezdevlopment.expensetracker.MainActivity.Companion.currency
+import com.gomezdevlopment.expensetracker.database.ViewModel
 import com.gomezdevlopment.expensetracker.databinding.SettingsBinding
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.FileWriter
 
 
 class Settings : AppCompatActivity() {
@@ -30,9 +37,14 @@ class Settings : AppCompatActivity() {
         binding = SettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if(File(filesDir, "profileImage.png").exists()){
+        if (File(filesDir, "profileImage.png").exists()) {
             val bitmap = BitmapFactory.decodeFile(File(filesDir, "profileImage.png").toString())
             binding.profileImage.setImageBitmap(bitmap)
+        }
+
+
+        binding.export.setOnClickListener {
+            exportCSV()
         }
 
         binding.homeArrow.setOnClickListener {
@@ -43,29 +55,30 @@ class Settings : AppCompatActivity() {
             changeUsername(this)
         }
 
-        val startForProfileImageResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            val resultCode = result.resultCode
-            val data = result.data
+        val startForProfileImageResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                val resultCode = result.resultCode
+                val data = result.data
 
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    //Image Uri will not be null for RESULT_OK
-                    val fileUri = data?.data!!
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        //Image Uri will not be null for RESULT_OK
+                        val fileUri = data?.data!!
 
-                    val bitmap = getContactBitmapFromURI(this, fileUri)
-                    if (bitmap != null) {
-                        saveImageToInternalStorage(bitmap)
+                        val bitmap = getContactBitmapFromURI(this, fileUri)
+                        if (bitmap != null) {
+                            saveImageToInternalStorage(bitmap)
+                        }
+                        binding.profileImage.setImageURI(fileUri)
                     }
-                    binding.profileImage.setImageURI(fileUri)
-                }
-                ImagePicker.RESULT_ERROR -> {
-                    Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
-                }
-                else -> {
-                    Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
+                    ImagePicker.RESULT_ERROR -> {
+                        Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
-        }
 
         binding.profileImage.setOnClickListener {
             ImagePicker.with(this)
@@ -119,6 +132,26 @@ class Settings : AppCompatActivity() {
         }
     }
 
+    private fun exportCSV() {
+        val userViewModel = ViewModelProvider(this)[ViewModel::class.java]
+        val filename = "TrackMyExpensesData.csv"
+        val path = getExternalFilesDir(null)
+        val csvFile = File(path, filename)
+        csvFile.delete()
+        csvFile.createNewFile()
+        csvFile.appendText("Title,Amount,Type,Date\n")
+
+        userViewModel.userEntries.observe(this) {
+            for (entry in it){
+                csvFile.appendText("${entry.title},${entry.value},${entry.entryType},${entry.date}\n")
+            }
+            val sendIntent = Intent(Intent.ACTION_SEND)
+            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile))
+            sendIntent.type = "text/csv"
+            startActivity(Intent.createChooser(sendIntent, "SHARE"))
+        }
+    }
+
     private fun getContactBitmapFromURI(context: Context, uri: Uri?): Bitmap? {
         try {
             val input = context.contentResolver.openInputStream(uri!!) ?: return null
@@ -141,7 +174,7 @@ class Settings : AppCompatActivity() {
         }
     }
 
-    private fun changeUsername(context: Context){
+    private fun changeUsername(context: Context) {
         val dialog = Dialog(context, R.style.AlertDialog)
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.change_username_dialog)
@@ -159,19 +192,28 @@ class Settings : AppCompatActivity() {
             return string.all { it.isLetter() }
         }
 
-        fun checkUserName(name: String){
-            if(name.isNotEmpty()){
-                if(isLetters(name)){
+        fun checkUserName(name: String) {
+            if (name.isNotEmpty()) {
+                if (isLetters(name)) {
                     val userName = name
                     val preferences = getSharedPreferences("preferences", MODE_PRIVATE)
                     preferences.edit().putString("username", userName).apply()
                     dialog.dismiss()
-                    Toast.makeText(context, "Username Changed Successfully", Toast.LENGTH_LONG).show()
-                }else{
-                    Toast.makeText(context, "Please enter alphabetic characters only. No spaces.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Username Changed Successfully", Toast.LENGTH_LONG)
+                        .show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Please enter alphabetic characters only. No spaces.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-            }else{
-                Toast.makeText(context, "Please enter a name, it can be a nickname or any username you prefer.", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    "Please enter a name, it can be a nickname or any username you prefer.",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
