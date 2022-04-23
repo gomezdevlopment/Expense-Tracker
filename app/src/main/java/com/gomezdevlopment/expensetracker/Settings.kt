@@ -2,21 +2,19 @@ package com.gomezdevlopment.expensetracker
 
 import android.app.Activity
 import android.app.Dialog
-import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.gomezdevlopment.expensetracker.MainActivity.Companion.currency
@@ -25,7 +23,6 @@ import com.gomezdevlopment.expensetracker.databinding.SettingsBinding
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.io.FileWriter
 
 
 class Settings : AppCompatActivity() {
@@ -142,11 +139,17 @@ class Settings : AppCompatActivity() {
         csvFile.appendText("Title,Amount,Type,Date\n")
 
         userViewModel.userEntries.observe(this) {
-            for (entry in it){
+            for (entry in it) {
                 csvFile.appendText("${entry.title},${entry.value},${entry.entryType},${entry.date}\n")
             }
+            val uri = FileProvider.getUriForFile(
+                this,
+                applicationContext.packageName.toString() + ".provider",
+                csvFile
+            )
             val sendIntent = Intent(Intent.ACTION_SEND)
-            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(csvFile))
+            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            sendIntent.putExtra(Intent.EXTRA_STREAM, uri)
             sendIntent.type = "text/csv"
             startActivity(Intent.createChooser(sendIntent, "SHARE"))
         }
