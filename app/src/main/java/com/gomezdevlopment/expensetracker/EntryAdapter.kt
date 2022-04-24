@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.gomezdevlopment.expensetracker.MainActivity.Companion.currency
@@ -18,11 +19,12 @@ import java.text.DecimalFormatSymbols
 import java.util.*
 import kotlin.collections.ArrayList
 
-class EntryAdapter(private var context: Context): RecyclerView.Adapter<EntryAdapter.MyViewHolder>() {
+class EntryAdapter(private var context: Context) :
+    RecyclerView.Adapter<EntryAdapter.MyViewHolder>() {
 
     private var entryList = emptyList<UserEntry>()
 
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val label: TextView = itemView.findViewById(R.id.label)
         val amount: TextView = itemView.findViewById(R.id.amount)
         val date: TextView = itemView.findViewById(R.id.date)
@@ -30,7 +32,8 @@ class EntryAdapter(private var context: Context): RecyclerView.Adapter<EntryAdap
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val entryItem = LayoutInflater.from(parent.context).inflate(R.layout.entry_item, parent, false)
+        val entryItem =
+            LayoutInflater.from(parent.context).inflate(R.layout.entry_item, parent, false)
         return MyViewHolder(entryItem)
     }
 
@@ -43,7 +46,7 @@ class EntryAdapter(private var context: Context): RecyclerView.Adapter<EntryAdap
         val label = currentEntry.title
 
         var formattedValue: String = DecimalFormat("#,###.##").format(currentEntry.value)
-        if(currency == "€"){
+        if (currency == "€") {
             val europeanDecimalFormat = DecimalFormatSymbols(Locale.getDefault())
             europeanDecimalFormat.decimalSeparator = ','
             europeanDecimalFormat.groupingSeparator = '.'
@@ -59,39 +62,42 @@ class EntryAdapter(private var context: Context): RecyclerView.Adapter<EntryAdap
         holder.date.text = date
 
         holder.entryCard.setOnClickListener {
-            val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
+            val builder: AlertDialog.Builder =
+                AlertDialog.Builder(context, R.style.AlertDialogTheme)
+            val dialog: AlertDialog = builder.setTitle("Delete Entry")
+                .setMessage("Are you sure you want to delete this entry?")
+                .setPositiveButton("Yes") { _, _ ->
+                    deleteEntryFromDatabase(currentEntry)
+                    Toast.makeText(context, "Entry Deleted", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    Toast.makeText(context, "Deletion Cancelled", Toast.LENGTH_SHORT).show()
+                }.create()
 
-            builder.setTitle("Delete Entry")
-            builder.setMessage("Are you sure you want to delete this entry?")
-
-            builder.setPositiveButton("Yes") { _, _ ->
-                deleteEntryFromDatabase(currentEntry)
-                Toast.makeText(context, "Entry Deleted", Toast.LENGTH_SHORT).show()
-            }
-
-            builder.setNegativeButton("Cancel") { _, _ ->
-                Toast.makeText(context, "Deletion Cancelled", Toast.LENGTH_SHORT).show()
-            }
-            builder.show()
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(context, R.color.statsBackButton))
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(context, R.color.statsBackButton))
         }
     }
 
-    private fun deleteEntryFromDatabase(entry: UserEntry){
+    private fun deleteEntryFromDatabase(entry: UserEntry) {
         MainActivity.userViewModel.deleteEntry(entry)
     }
 
-    fun setData(entry: List<UserEntry>){
+    fun setData(entry: List<UserEntry>) {
         this.entryList = entry
         notifyDataSetChanged()
     }
 
-    fun notifyCurrencyChange(){
+    fun notifyCurrencyChange() {
         notifyItemRangeChanged(0, entryList.size)
     }
 
-    fun getTotal(): Float{
+    fun getTotal(): Float {
         var total = 0f
-        for(entry in entryList){
+        for (entry in entryList) {
             total += entry.value
         }
         return total

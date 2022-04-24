@@ -127,19 +127,21 @@ class MainActivity : AppCompatActivity() {
 
         binding.monthDropdownField.setOnItemClickListener { _, _, i, _ ->
 
-            month = dates[i]
-            userViewModel.getEntriesByDate(dates[i])
-            userViewModel.incomeEntriesByDate.observe(this) { entries ->
-                entries.let{
-                    incomeAdapter.setData(it)
+            if(dates.isNotEmpty()){
+                month = dates[i]
+                userViewModel.getEntriesByDate(dates[i])
+                userViewModel.incomeEntriesByDate.observe(this) { entries ->
+                    entries.let{
+                        incomeAdapter.setData(it)
+                    }
+                    setTotals()
                 }
-                setTotals()
-            }
-            userViewModel.expenseEntriesByDate.observe(this) { entries ->
-                entries.let{
-                    expenseAdapter.setData(it)
+                userViewModel.expenseEntriesByDate.observe(this) { entries ->
+                    entries.let{
+                        expenseAdapter.setData(it)
+                    }
+                    setTotals()
                 }
-                setTotals()
             }
         }
     }
