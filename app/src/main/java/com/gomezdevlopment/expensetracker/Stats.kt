@@ -44,10 +44,12 @@ class Stats: AppCompatActivity() {
         val xAxisLabels: ArrayList<String> = arrayListOf()
 
         userViewModel.getAllEntriesByDate(month)
+        println(month)
         userViewModel.entriesByDate.observe(this) { entries ->
             var pos = 0f
             val sortedEntries = entries.sortedBy { it.value }
             for(entry in sortedEntries) {
+                println(entry.title)
                 detailedValues.add(BarEntry(pos++, entry.value))
                 xAxisLabels.add(entry.title)
             }

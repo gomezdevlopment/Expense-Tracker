@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         setMonthAdapter()
 
-        month = currentMonth()
+        month = currentMonthForQuery()
 
         binding.floatingActionButton.setOnClickListener {
             val intent = Intent(this, Stats::class.java)
@@ -254,6 +254,27 @@ class MainActivity : AppCompatActivity() {
             else -> "ERROR"
         }
         return "$month $year"
+    }
+
+    private fun currentMonthForQuery(): String {
+        val calendar: Calendar = Calendar.getInstance()
+        val year: Int = calendar.get(Calendar.YEAR)
+        val month: String = when (calendar.get(Calendar.MONTH)) {
+            0 -> "01"
+            1 -> "02"
+            2 -> "03"
+            3 -> "04"
+            4 -> "05"
+            5 -> "06"
+            6 -> "07"
+            7 -> "08"
+            8 -> "09"
+            9 -> "10"
+            10 -> "11"
+            11 -> "12"
+            else -> "ERROR"
+        }
+        return "$year/$month"
     }
 
     private fun setTheme() {
